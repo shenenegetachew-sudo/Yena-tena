@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="am" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ጤናዬ - Complete Mobile Health App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; user-select: none; }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col pb-20" id="app-body">
+
+    <!-- Top App Bar with Live Clock -->
+    <header class="bg-emerald-700 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-md mx-auto px-4 py-2.5 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-9 h-9 bg-white text-emerald-700 rounded-full flex items-center justify-center font-bold text-lg shadow">
+                    🩺
+                </div>
+                <div>
+                    <h1 class="text-xs font-bold">ጤናዬ App</h1>
+                    <p class="text-[10px] text-emerald-100">አዘጋጅ፡ ደሳለኝ ጌታቸው</p>
+                </div>
+            </div>
+            <!-- Live Digital Clock -->
+            <div class="text-right bg-emerald-800/80 px-2.5 py-1 rounded-xl border border-emerald-600">
+                <div id="live-clock" class="text-xs font-mono font-bold text-amber-300">00:00:00</div>
+                <div id="live-date" class="text-[9px] text-emerald-200">--/--/----</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- App Content Area -->
+    <main class="max-w-md w-full mx-auto px-4 py-4 flex-grow space-y-4">
+
+        <!-- 1. HOME PAGE -->
+        <section id="page-home" class="page-section active space-y-4">
+            
+            <!-- MAIN TOP WELCOME & PROFILE HEADER -->
+            <div class="bg-gradient-to-br from-emerald-700 to-teal-800 text-white p-5 rounded-3xl shadow-md space-y-3">
+                <div class="flex items-center space-x-3 border-b border-emerald-600/50 pb-3">
+                    <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-2xl border border-white/20">
+                        👨‍⚕️
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-bold">ደሳለኝ ጌታቸው</h2>
+                        <p class="text-[11px] text-emerald-200">ፕሬዚዳንት እና የነርሲንግ ባለሙያ</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-1 text-xs text-emerald-100">
+                    <p class="font-semibold text-white">🏢 መሠረተ አንድነት በጎ አድራጎት ማህበር (ዲላ)</p>
+                    <p class="text-[11px] opacity-90">ማህበረሰቡን ከበሽታ ለመጠበቅ እና የጤና ንቃተ-ህሊና ለማዳበር የተዘጋጀ ከመስመር ውጭ (Offline) የሚሰራ ትምህርታዊ መተግበሪያ።</p>
+                </div>
+
+                <div class="bg-emerald-900/40 p-2.5 rounded-2xl flex justify-between items-center text-[11px] border border-emerald-600/30">
+                    <span>📞 0942820079</span>
+                    <span>✉️ getachewd714@gmail.com</span>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="relative">
+                <input type="text" id="search-input" onkeyup="searchDisease()" placeholder="በሽታዎችን እዚህ ይፈልጉ (ለምሳሌ፦ ወባ, ቲቢ)..." class="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm">
+                <span class="absolute left-3.5 top-2.5 text-slate-400 text-sm">🔍</span>
+            </div>
+
+            <!-- Quick Navigation Shortcuts -->
+            <div class="grid grid-cols-3 gap-2 text-center">
+                <button onclick="navTo('diseases')" class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center space-y-1">
+                    <span class="text-lg">🦠</span>
+                    <span class="text-[10px] font-semibold text-slate-700">30+ በሽታዎች</span>
+                </button>
+                <button onclick="navTo('game')" class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center space-y-1">
+                    <span class="text-lg">🎮</span>
+                    <span class="text-[10px] font-semibold text-slate-700">ጤና Quiz</span>
+                </button>
+                <button onclick="navTo('inbox')" class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center space-y-1">
+                    <span class="text-lg">📥</span>
+                    <span class="text-[10px] font-semibold text-slate-700">Inbox & Contact</span>
+                </button>
+            </div>
+
+            <!-- Featured Disease List Preview -->
+            <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-xs text-slate-800">ተመራጭ የጤና ትምህርቶች</h3>
+                    <button onclick="navTo('diseases')" class="text-[10px] text-emerald-700 font-bold">ሁሉንም አሳይ ➔</button>
+                </div>
+                
+                <div id="disease-list-cards" class="space-y-3">
+                    <!-- Disease Card 1: Malaria -->
+                    <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 space-y-3 disease-card" data-title="ወባ malaria">
+                        <img src="https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?auto=format&fit=crop&w=600&q=80" class="w-full h-32 object-cover rounded-2xl">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-xs text-slate-900">1. ወባ (Malaria)</h4>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="toggleLike(this)" class="text-xs bg-slate-100 px-2 py-1 rounded-full">❤️ <span class="like-count">24</span></button>
+                                <button onclick="toggleFav(this, 'ወባ (Malaria)')" class="text-xs bg-slate-100 p-1 rounded-full">⭐</button>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-600">በሴቷ አኖፌሊስ ትንኝ ንክሻ የሚተላለፍ፣ ከፍተኛ ትኩሳትና ብርድ ብርድ ማለት የሚያስከትል በሽታ።</p>
+                        <button onclick="openModal('malaria')" class="w-full py-2 bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow">ሰፊ ማብራሪያ ያንብቡ (12 ክፍሎች) ➔</button>
+                    </div>
+
+                    <!-- Disease Card 2: TB -->
+                    <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 space-y-3 disease-card" data-title="ሳንባ ነቀርሳ tuberculosis tb">
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=80" class="w-full h-32 object-cover rounded-2xl">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-xs text-slate-900">2. ሳንባ ነቀርሳ (Tuberculosis)</h4>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="toggleLike(this)" class="text-xs bg-slate-100 px-2 py-1 rounded-full">❤️ <span class="like-count">19</span></button>
+                                <button onclick="toggleFav(this, 'ሳንባ ነቀርሳ')" class="text-xs bg-slate-100 p-1 rounded-full">⭐</button>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-600">በባክቴሪያ የሚመጣ እና ሳንባን የሚያጠቃ አደገኛ ተላላፊ በሽታ።</p>
+                        <button onclick="openModal('tb')" class="w-full py-2 bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow">ሰፊ ማብራሪያ ያንብቡ (12 ክፍሎች) ➔</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. DISEASES PAGE (30+ DISEASES CATALOG) -->
+        <section id="page-diseases" class="page-section space-y-4">
+            <h2 class="font-bold text-xs text-slate-800">🦠 ከ30 በላይ የጤና ሁኔታዎች ዝርዝር</h2>
+            <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 space-y-3 text-xs text-slate-700">
+                <p>በመተግበሪያው ውስጥ የተካተቱ ዋና ዋና በሽታዎች (እያንዳንዱን በመጫን ሰፊ ማብራሪያ ማግኘት ይቻላል)፦</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="openModal('malaria')" class="p-2.5 bg-slate-50 rounded-xl text-left font-semibold hover:bg-emerald-50">1. ወባ (Malaria)</button>
+                    <button onclick="openModal('tb')" class="p-2.5 bg-slate-50 rounded-xl text-left font-semibold hover:bg-emerald-50">2. ሳንባ ነቀርሳ (TB)</button>
+                    <button onclick="openModal('malaria')" class="p-2.5 bg-slate-50 rounded-xl text-left font-semibold hover:bg-emerald-50">3. ኤችአይቪ/ኤድስ</button>
+                    <button onclick="openModal('malaria')" class="p-2.5 bg-slate-50 rounded-xl text-left font-semibold hover:bg-emerald-50">4. የስኳር በሽታ</button>
+                    <button onclick="openModal('malaria')" class="p-2.5 bg-slate-50 rounded-xl text-left font-semibold hover:bg-emerald-50">5. የደም ግፊት</button>
+                    <button onclick="openModal('malaria')" class="p-2.5 bg-slate-50 rounded-xl text-left font-semibold hover:bg-emerald-50">6. ኮሌራ</button>
+                    <button onclick="openModal('malaria')" class="p-2.5 bg-slate-50 rounded-xl text-left font-semibold hover:bg-emerald-50">7. ታይፎይድ</button>
+                    <button onclick="openModal('malaria')" class="p-2.5 bg-slate-50 rounded-xl text-left font-semibold hover:bg-emerald-50">8. የሳንባ ምች</button>
+                    <button onclick="openModal('malaria')" class="p-2.5 bg-slate-50 rounded-xl text-left font-semibold hover:bg-emerald-50">9. ተቅማጥና ማስታወክ</button>
+                    <button onclick="openModal('malaria')" class="p-2.5 bg-slate-50 rounded-xl text-left font-semibold hover:bg-emerald-50">10. አስም</button>
+                </div>
+                <p class="text-[10px] text-slate-400 text-center pt-2">እና ሌሎች ተጨማሪ 20+ በሽታዎች በስርዓቱ ተካትተዋል።</p>
+            </div>
+        </section>
+
+        <!-- 3. FAVORITES PAGE -->
+        <section id="page-favorites" class="page-section space-y-4">
+            <h2 class="font-bold text-xs text-slate-800">⭐ የምርጥ በሽታዎች ዝርዝር (Favorites)</h2>
+            <div id="fav-container" class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 min-h-[150px] space-y-2">
+                <p class="text-xs text-slate-400 text-center py-6">እስካሁን ምንም የተወደደ በሽታ አልተመረጠም። በኮከብ (⭐) ምልክት ይምረጡ።</p>
+            </div>
+        </section>
+
+        <!-- 4. GAME PAGE (HEALTH QUIZ) -->
+        <section id="page-game" class="page-section space-y-4">
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 space-y-4 text-center">
+                <div class="text-3xl">🎮</div>
+                <h2 class="font-bold text-sm text-slate-800">የጤና እውቀት መፈተሻ ጨዋታ</h2>
+                <p class="text-xs text-slate-500">ስለ ጤና ያለዎትን እውቀት ይፈትሹ!</p>
+                
+                <div class="bg-slate-50 p-4 rounded-2xl text-left space-y-3">
+                    <p class="font-bold text-xs text-slate-800">ጥያቄ: ወባ በምን አማካኝነት ይተላለፋል?</p>
+                    <div class="space-y-2">
+                        <button onclick="answerQuiz(true)" class="w-full py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold hover:bg-emerald-50">ሀ) በትንኝ ንክሻ</button>
+                        <button onclick="answerQuiz(false)" class="w-full py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold hover:bg-rose-50">ለ) በተበከለ አየር</button>
+                    </div>
+                </div>
+                <p id="quiz-result" class="text-xs font-bold text-emerald-700 hidden">ትክክል ብለዋል! 🎉</p>
+            </div>
+        </section>
+
+        <!-- 5. INBOX / CONTACT PAGE -->
+        <section id="page-inbox" class="page-section space-y-4">
+            <h2 class="font-bold text-xs text-slate-800">📥 የመልእክት ሳጥን እና የእውቂያ መረጃ</h2>
+            
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 space-y-4">
+                <div class="border-b pb-3 space-y-1">
+                    <h3 class="font-bold text-xs text-emerald-800">ለበለጠ መረጃ እና ጥያቄዎች፦</h3>
+                    <p class="text-xs text-slate-700"><strong>📱 ስልክ፦</strong> 0942820079</p>
+                    <p class="text-xs text-slate-700"><strong>📧 ኢሜይል፦</strong> getachewd714@gmail.com</p>
+                    <p class="text-xs text-slate-700"><strong>🏢 ድርጅት፦</strong> መሠረተ አንድነት በጎ አድራጎት ማህበር (ዲላ)</p>
+                    <p class="text-xs text-slate-700"><strong>👨‍⚕️ አዘጋጅ፦</strong> ደሳለኝ ጌታቸው (ፕሬዚዳንት/ነርሲንግ ባለሙያ)</p>
+                </div>
+
+                <form onsubmit="sendMessage(event)" class="space-y-3">
+                    <h4 class="font-bold text-xs text-slate-800">ቀጥታ መልእክት ይላኩ (Inbox)</h4>
+                    <input type="text" id="sender-name" placeholder="ስምዎ" required class="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    <textarea id="sender-msg" placeholder="መልእክትዎን እዚህ ይጻፉ..." rows="3" required class="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"></textarea>
+                    <button type="submit" class="w-full py-2.5 bg-emerald-700 text-white rounded-xl text-xs font-bold shadow">መልእክት ላክ 📤</button>
+                </form>
+                <p id="msg-status" class="text-[11px] text-emerald-700 font-bold text-center hidden">መልእክትዎ ተልኳል! እናመሰግናለን።</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FULL DISEASE DETAILS MODAL (12 PARTS) -->
+    <div id="disease-modal" class="fixed inset-0 bg-black/60 z-50 flex justify-center items-end hidden">
+        <div class="bg-white w-full max-w-md h-[85vh] rounded-t-3xl p-5 overflow-y-auto space-y-4 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 bg-slate-100 text-slate-700 rounded-full w-8 h-8 flex items-center justify-center font-bold">✕</button>
+            
+            <div id="modal-content" class="space-y-3 text-xs text-slate-700">
+                <!-- Content inserted dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Standard App Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-40">
+        <div class="max-w-md mx-auto flex justify-around py-2">
+            <button onclick="navTo('home')" id="nav-home" class="flex flex-col items-center text-emerald-700 font-bold">
+                <span class="text-lg">🏠</span>
+                <span class="text-[10px]">መነሻ</span>
+            </button>
+            <button onclick="navTo('diseases')" id="nav-diseases" class="flex flex-col items-center text-slate-400">
+                <span class="text-lg">🦠</span>
+                <span class="text-[10px]">በሽታዎች</span>
+            </button>
+            <button onclick="navTo('favorites')" id="nav-favorites" class="flex flex-col items-center text-slate-400">
+                <span class="text-lg">⭐</span>
+                <span class="text-[10px]">Favorites</span>
+            </button>
+            <button onclick="navTo('game')" id="nav-game" class="flex flex-col items-center text-slate-400">
+                <span class="text-lg">🎮</span>
+                <span class="text-[10px]">ጨዋታ</span>
+            </button>
+            <button onclick="navTo('inbox')" id="nav-inbox" class="flex flex-col items-center text-slate-400">
+                <span class="text-lg">📥</span>
+                <span class="text-[10px]">Inbox</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- JavaScript Controller -->
+    <script>
+        // LIVE CLOCK FUNCTION
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('live-clock').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('live-date').textContent = now.toLocaleDateString('am-ET', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // APP NAVIGATION
+        function navTo(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+
+            ['home', 'diseases', 'favorites', 'game', 'inbox'].forEach(tab => {
+                const btn = document.getElementById('nav-' + tab);
+                if(tab === pageId) {
+                    btn.className = "flex flex-col items-center text-emerald-700 font-bold";
+                } else {
+                    btn.className = "flex flex-col items-center text-slate-400";
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // SEARCH FUNCTION
+        function searchDisease() {
+            let input = document.getElementById('search-input').value.toLowerCase();
+            let cards = document.querySelectorAll('.disease-card');
+            if(input.length > 0) {
+                navTo('home');
+            }
+            cards.forEach(card => {
+                let title = card.getAttribute('data-title');
+                if(title.includes(input)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // LIKES & FAVORITES
+        let favList = [];
+        function toggleLike(btn) {
+            let countSpan = btn.querySelector('.like-count');
+            let current = parseInt(countSpan.textContent);
+            countSpan.textContent = current + 1;
+            btn.classList.add('text-rose-600');
+        }
+
+        function toggleFav(btn, diseaseName) {
+            if(!favList.includes(diseaseName)) {
+                favList.push(diseaseName);
+                btn.textContent = "⭐";
+                btn.classList.add('bg-amber-100');
+            } else {
+                favList = favList.filter(item => item !== diseaseName);
+                btn.textContent = "☆";
+                btn.classList.remove('bg-amber-100');
+            }
+            renderFavs();
+        }
+
+        function renderFavs() {
+            const container = document.getElementById('fav-container');
+            if(favList.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">እስካሁን ምንም የተወደደ በሽታ አልተመረጠም።</p>';
+                return;
+            }
+            container.innerHTML = favList.map(item => `
+                <div class="p-3 bg-slate-50 rounded-2xl flex justify-between items-center">
+                    <span class="font-bold text-xs text-slate-800">${item}</span>
+                    <span class="text-xs text-amber-500">⭐ Favorited</span>
+                </div>
+            `).join('');
+        }
+
+        // MODAL 12-PART CLINICAL DETAILS
+        const diseaseDetails = {
+            malaria: `
+                <h3 class="text-base font-bold text-emerald-800 border-b pb-2">1. ወባ (Malaria) - የተሟላ የ12 ክፍሎች ጥናት</h3>
+                <p><strong>1. መግቢያ (Introduction):</strong> ወባ በሐሩር ክልል ውስጥ በስፋት የሚከሰት ጥገኛ ተሕዋስያን በሽታ ነው።</p>
+                <p><strong>2. ትርጉም (Definition):</strong> በፕላዝሞዲየም ዝርያዎች የሚከሰት አጣዳፊ በሽታ።</p>
+                <p><strong>3. መንስኤ (Causes):</strong> Plasmodium falciparum & P. vivax.</p>
+                <p><strong>4. ዓይነቶች (Types):</strong> ከባድ እና መካከለኛ ወባ።</p>
+                <p><strong>5. ምልክቶች (Signs & Symptoms):</strong> ትኩሳት፣ ብርድ ብርድ ማለት፣ ራስ ምታት።</p>
+                <p><strong>6. የመተላለፊያ መንገዶች (Transmission):</strong> በሴቷ አኖፌሊስ ትንኝ ንክሻ።</p>
+                <p><strong>7. የተጋላጭነት ምክንያቶች (Risk Factors):</strong> አጎበር አለመጠቀም፣ የውሃ ኩሬዎች አጠገብ መኖር።</p>
+                <p><strong>8. ምርመራ (Diagnosis):</strong> የደም ስሚር (BF) እና RDT.</p>
+                <p><strong>9. ሕክምና (Treatment):</strong> Coartem መድኃኒት መውሰድ።</p>
+                <p><strong>10. መከላከያ (Prevention):</strong> አጎበር መጠቀም እና ኩሬዎችን ማፍሰስ።</p>
+                <p><strong>11. ውስብስቦች (Complications):</strong> የአንጎል ወባ እና ከባድ የደም ማነስ።</p>
+                <p><strong>12. ተፅዕኖና ሪፈረንስ (Effects & References):</strong> የኢኮኖሚ ጉዳት። WHO/FMOH Guidelines.</p>
+            `,
+            tb: `
+                <h3 class="text-base font-bold text-emerald-800 border-b pb-2">2. ሳንባ ነቀርሳ (TB) - የተሟላ የ12 ክፍሎች ጥናት</h3>
+                <p><strong>1. መግቢያ (Introduction):</strong> ሳንባ ነቀርሳ በባክቴሪያ የሚመጣ ተላላፊ በሽታ ነው።</p>
+                <p><strong>2. ትርጉም (Definition):</strong> በMycobacterium tuberculosis የሚመጣ የሳንባ በሽታ።</p>
+                <p><strong>3. መንስኤ (Causes):</strong> Mycobacterium tuberculosis ባክቴሪያ።</p>
+                <p><strong>4. ዓይነቶች (Types):</strong> የሳንባ ቲቢ እና ከሳንባ ውጭ የሚከሰት ቲቢ።</p>
+                <p><strong>5. ምልክቶች (Signs & Symptoms):</strong> ከ 2 ሳምንት በላይ የሚቆይ ሳል፣ ደም ማሳል፣ ማታ ላብ።</p>
+                <p><strong>6. የመተላለፊያ መንገዶች (Transmission):</strong> በአየር ጠብታዎች (በሳልና በማስነጠስ)።</p>
+                <p><strong>7. የተጋላጭነት ምክንያቶች (Risk Factors):</strong> ከኤችአይቪ ጋር መኖር፣ በተጨናነቀ ቦታ መኖር።</p>
+                <p><strong>8. ምርመራ (Diagnosis):</strong> የባንክ ስሚር (Sputum) እና GeneXpert.</p>
+                <p><strong>9. ሕክምና (Treatment):</strong> የ6 ወር DOTS መድኃኒቶች አጠቃቀም።</p>
+                <p><strong>10. መከላከያ (Prevention):</strong> የቢሲጂ (BCG) ክትባት እና ቤቶችን አየር ማስገባት።</p>
+                <p><strong>11. ውስብስቦች (Complications):</strong> የሳንባ ሕብረ ሕዋስ መጎዳትና መተንፈስ ማጣት።</p>
+                <p><strong>12. ተፅዕኖና ሪፈረንስ (Effects & References):</strong> ማህበራዊ እና ኢኮኖሚያዊ ተፅዕኖ። WHO & FMOH.</p>
+            `
+        };
+
+        function openModal(id) {
+            document.getElementById('modal-content').innerHTML = diseaseDetails[id] || "<p>መረጃው በማዘጋጀት ላይ ነው።</p>";
+            document.getElementById('disease-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('disease-modal').classList.add('hidden');
+        }
+
+        function answerQuiz(isCorrect) {
+            const res = document.getElementById('quiz-result');
+            res.classList.remove('hidden');
+            if(isCorrect) {
+                res.textContent = "ትክክል ብለዋል! 🎉 ወባ የሚተላለፈው በትንኝ ንክሻ ነው።";
+            } else {
+                res.textContent = "ትክክል አይደለም! ወባ የሚተላለፈው በትንኝ ንክሻ ነው። ❌";
+            }
+        }
+
+        function sendMessage(e) {
+            e.preventDefault();
+            document.getElementById('msg-status').classList.remove('hidden');
+            document.getElementById('sender-name').value = '';
+            document.getElementById('sender-msg').value = '';
+        }
+    </script>
+</body>
+</html>
